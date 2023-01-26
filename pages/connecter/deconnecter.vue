@@ -1,3 +1,3 @@
 <template>
-    <h2>vous avez été deconnecter</h2>
+    <h2 class="container text-center">Vous avez été deconnecter</h2>
 </template>
