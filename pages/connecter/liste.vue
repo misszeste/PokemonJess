@@ -1,23 +1,29 @@
 <script setup>
-    // déclaration variable
-    const pokemonRequest = await fetch('https://pokeapi.co/api/v2/pokemon?limit=12')
-    const pokemonRequestImage = await fetch('https://pokeapi.co/api/v2/pokemon/')
-    const pokemonList = await pokemonRequest.json()   
-    const pokemonListImage = await pokemonRequestImage.json() 
-</script>
+    const pokemonsRequest = await fetch(`
+        https://pokeapi.co/api/v2/pokemon?limit=100`
+    );
+    const pokemonsList = await pokemonsRequest.json();
 
-<template>         
-    <!-- appel component Card -->          
-    <Card v-for="pokemon in pokemonList.results" :key="pokemon.name" :pokemon="pokemon">
-        {{ pokemon.name}}        
-    </Card> 
-    <nav aria-label="Page navigation example" >
-        <div class="pagination">
-            <div class="page-item"><a class="page-link" href="#">Previous</a></div>
-            <div class="page-item"><a class="page-link" href="#">1</a></div>
-            <div class="page-item"><a class="page-link" href="#">2</a></div>          
-            <div class="page-item"><a class="page-link" href="#">Next</a></div>
-        </div>
-    </nav>       
+    const list = await pokemonsList.results.map(async (pokemon) => {
+        const pokemonTemp = await fetch(pokemon.url);
+        return pokemonTemp.json();
+    });
+
+    let pokemonWithDetails = [];
+
+    Promise.all(list).then((values) => {
+        pokemonWithDetails.push(values);
+    });
+    console.log(pokemonWithDetails)
+</script>
+<template>
+    <ul>
+        <li v-for= "pokemon in pokemonWithDetails[0]" :key="pokemon.name" :pokemon="pokemon">
+            <a>
+                <img :src="pokemon.sprites.front_default" alt="" srcset="">
+                {{ pokemon.name}}
+            </a>
+        </li>
+    </ul>
 </template>
 
